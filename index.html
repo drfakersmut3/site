@@ -95,37 +95,44 @@ drfaker.com</p><p class="rich-link_url">mrdeepfakes.com</p></div></a></section><
   </h2>
 
   <div class="block -start-5 -end-11 wrapper -align-center">
- <script src="https://formspree.io/js/formbutton-v1.min.js" defer></script>
+    <form action="https://formspree.io/f/mwpodbre" method="POST" class="form" style="width: 100%; max-width: 500px;">
+      <input type="hidden" name="next" value="https://nudify-her.com/#form-sent">
+
+      <div class="form_field">
+        <label for="name" class="form_label" style="color: #111;">Name</label>
+        <input type="text" id="name" name="name" class="form_input" required>
+      </div>
+
+      <div class="form_field">
+        <label for="email" class="form_label" style="color: #111;">Email</label>
+        <input type="email" id="email" name="_replyto" class="form_input" required>
+      </div>
+
+      <div class="form_field">
+        <label for="message" class="form_label" style="color: #111;">Message</label>
+        <textarea id="message" name="message" class="form_textarea" rows="5" required></textarea>
+      </div>
+
+      <div class="form_actions" style="text-align: center;">
+        <button type="submit" class="button -primary">Submit</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="form-sent" class="section -padding-64 theme -inverted" style="display:none;">
+  <div class="block -start-3 -end-10 wrapper -align-center">
+    <div style="max-width: 500px; margin: 0 auto; text-align: center;">
+      <h2>Thank you!</h2>
+      <p>Check your spam, you will see the reply there probably in approx. 1 day or less :)</p>
+    </div>
+  </div>
+</section>
+
 <script>
-  /* paste this line in verbatim */
-  window.formbutton=window.formbutton||function(){(formbutton.q=formbutton.q||[]).push(arguments)};
-  /* customize formbutton below*/     
-  formbutton("create", {
-    action: "https://formspree.io/f/mwpodbre",
-    title: "How can we help?",
-    fields: [
-      { 
-        type: "email", 
-        label: "Email:", 
-        name: "email",
-        required: true,
-        placeholder: "your@email.com"
-      },
-      {
-        type: "textarea",
-        label: "Message:",
-        name: "message",
-        placeholder: "What's on your mind?",
-      },
-      { type: "submit" }      
-    ],
-    styles: {
-      title: {
-        backgroundColor: "gray"
-      },
-      button: {
-        backgroundColor: "gray"
-      }
-    }
-  });
+  if (window.location.hash === "#form-sent") {
+    const thank = document.getElementById("form-sent");
+    thank.style.display = "block";
+    thank.scrollIntoView({ behavior: "smooth" });
+  }
 </script>
