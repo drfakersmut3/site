@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Nudifi — Visual Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #15151c;
+    --neutral:   #f5f4ed;
+    --primary:   #cf9f52;
+    --secondary: #4a2125;
+    --tertiary:  #24313d;
+    --muted:     rgba(245,244,237,0.45);
+    --font-body: 'Rubik', sans-serif;
+    --radius:    6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--neutral);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(21,21,28,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--neutral); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: visible;
+  }
+
+  @media (min-width: 901px) {
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      align-items: center;
+      gap: 64px;
+    }
+  }
+
+  /* film grain texture */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    opacity: 0.6;
+    z-index: 2;
+  }
+
+  /* warm gradient accent from bottom-left */
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(74,33,37,0.35) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 5;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 28px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--primary);
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 800px;
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--primary);
+  }
+
+  .hero-title strong {
+    font-weight: 700;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    position: relative;
+    margin-bottom: 48px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--primary);
+    color: var(--bg);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 14px 32px;
+    border-radius: var(--radius);
+    transition: opacity 0.2s, transform 0.2s;
+    position: relative;
+  }
+
+  .hero-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+  .hero-cta svg { width: 16px; height: 16px; }
+
+  /* ── DYNAMIC MEDIA CAROUSEL ── */
+  .hero-media {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    margin-top: 40px;
+    overflow: visible;
+  }
+
+  @media (min-width: 901px) {
+    .hero-media {
+      margin-top: 0;
+      height: 620px;
+    }
+  }
+
+  .media-main {
+    position: relative;
+    width: 100%;
+    height: 90%;
+    background: #111116;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+    z-index: 40;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+  }
+
+  /* Enlarges significantly and glides leftward into center area over the text description */
+  @media (min-width: 901px) {
+    .media-main:hover {
+      transform: scale(1.16) translateX(-22%);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95);
+      z-index: 60;
+    }
+  }
+  @media (max-width: 900px) {
+    .media-main:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .media-main video,
+  .media-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Blurred Multi-Background Boxes */
+  .media-bg-box {
+    position: absolute;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 20;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    opacity: 0.65;
+    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .media-bg-box video,
+  .media-bg-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Carousel Navigation Triggers */
+  .media-preview {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    background: rgba(21, 21, 28, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    z-index: 50;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neutral);
+    transition: all 0.2s ease;
+    opacity: 0.8;
+  }
+
+  .media-preview:hover {
+    opacity: 1;
+    background: var(--primary);
+    color: var(--bg);
+    border-color: var(--primary);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .media-preview.left { left: -16px; }
+  .media-preview.right { right: -16px; }
+
+  .media-preview svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* ── SECTION SHARED ── */
+  section {
+    padding: 96px 48px;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--primary);
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 600px;
+    margin-bottom: 64px;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--bg); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+  }
+
+  .service-card {
+    background: var(--tertiary);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+
+  .service-card:hover { background: #2a3d4e; }
+
+  .service-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--primary);
+    transition: height 0.3s ease;
+  }
+
+  .service-card:hover::after { height: 100%; }
+
+  .service-icon {
+    width: 40px; height: 40px;
+    color: var(--primary);
+    margin-bottom: 24px;
+  }
+
+  .service-card h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .service-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid rgba(207,159,82,0.3);
+    border-radius: 2px;
+    color: var(--primary);
+  }
+
+  /* ── PORTFOLIO ── */
+  #portfolio { background: #111118; }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+
+  .portfolio-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--tertiary);
+  }
+
+  .portfolio-item:nth-child(1) { grid-column: span 2; }
+  .portfolio-item:nth-child(5) { grid-column: span 2; }
+
+  .portfolio-placeholder {
+    width: 100%;
+    padding-top: 56.25%;
+    position: relative;
+    background: var(--tertiary);
+  }
+
+  .portfolio-item:nth-child(1) .portfolio-placeholder,
+  .portfolio-item:nth-child(5) .portfolio-placeholder {
+    padding-top: 42%;
+  }
+
+  .portfolio-placeholder-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(245,244,237,0.18);
+    border: 1px dashed rgba(245,244,237,0.1);
+  }
+
+  .portfolio-placeholder-inner svg {
+    width: 32px; height: 32px;
+    opacity: 0.4;
+  }
+
+  .portfolio-placeholder-inner span {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(21,21,28,0.92) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px;
+  }
+
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+
+  .portfolio-overlay h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .portfolio-overlay p {
+    font-size: 0.78rem;
+    color: var(--primary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .portfolio-note {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: rgba(207,159,82,0.08);
+    border-left: 2px solid var(--primary);
+    font-size: 0.875rem;
+    color: var(--muted);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    max-width: 560px;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: var(--secondary);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  #about .section-title { color: var(--neutral); margin-bottom: 24px; }
+
+  .about-body {
+    color: rgba(245,244,237,0.75);
+    line-height: 1.75;
+    margin-bottom: 36px;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .stat-number {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(245,244,237,0.5);
+  }
+
+  .about-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tool-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .tool-name {
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(245,244,237,0.6);
+    width: 130px;
+    flex-shrink: 0;
+  }
+
+  .tool-bar {
+    flex: 1;
+    height: 2px;
+    background: rgba(245,244,237,0.1);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .tool-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 1px;
+    transform-origin: left;
+    animation: barGrow 1.2s ease forwards;
+    transform: scaleX(0);
+  }
+
+  @keyframes barGrow {
+    to { transform: scaleX(1); }
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--bg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-intro .section-title { margin-bottom: 20px; }
+
+  .contact-intro p {
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 36px;
+    font-size: 0.95rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .contact-link:hover { color: var(--primary); }
+
+  .contact-link svg {
+    width: 18px; height: 18px;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  /* form */
+  .form { display: flex; flex-direction: column; gap: 20px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-field label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(245,244,237,0.12);
+    border-radius: var(--radius);
+    color: var(--neutral);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    border-color: var(--primary);
+  }
+
+  .form-field select option { background: var(--bg); }
+
+  .form-submit {
+    background: var(--primary);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    align-self: flex-start;
+  }
+
+  .form-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0e0e14;
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(245,244,237,0.06);
+  }
+
+  .footer-logo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: rgba(245,244,237,0.3);
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-socials a {
+    color: rgba(245,244,237,0.3);
+    transition: color 0.2s;
+  }
+
+  .footer-socials a:hover { color: var(--primary); }
+  .footer-socials svg { width: 18px; height: 18px; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    .nav-links { gap: 20px; }
+    section { padding: 72px 24px; }
+    .hero { padding: 100px 24px 64px; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-item:nth-child(1),
+    .portfolio-item:nth-child(5) { grid-column: span 2; }
+    #about, #contact { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .portfolio-item:nth-child(1),
+    .portfolio-item:nth-child(5) { grid-column: span 1; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .tool-bar-fill { animation: none; transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Nudifi</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Image &amp; Video Editor</p>
+    <h1 class="hero-title">
+      Visual stories,<br>
+      <em><strong>crafted</strong></em> with precision
+    </h1>
+    <p class="hero-sub">
+      From complex compositing to retouching video elements — I handle the edits that push the limits of what's possible.
+    </p>
+    <a href="#contact" class="hero-cta">
+      Start a project
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="hero-media">
+    <div class="media-main" id="mediaMain">
+      </div>
+
+    <div class="media-preview left" id="previewLeft">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </div>
+    <div class="media-preview right" id="previewRight">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section id="services">
+  <p class="section-label">What I do</p>
+  <h2 class="section-title reveal">Professional editing services built around your vision</h2>
+
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <h3>Photo Retouching &amp; Compositing</h3>
+      <p>High-end retouching, background replacement, complex masking, multi-layer composites, and colour grading. AI-assisted and manual Photoshop workflows.</p>
+      <div class="service-tags">
+        <span class="tag">Photoshop</span>
+        <span class="tag">AI tools</span>
+        <span class="tag">Compositing</span>
+        <span class="tag">Colour grade</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+      </svg>
+      <h3>Video Editing &amp; VFX</h3>
+      <p>Scene editing, colour correction, motion graphics, face replacement, and visual effects. Suitable for short films, social content, and commercial projects.</p>
+      <div class="service-tags">
+        <span class="tag">Premiere</span>
+        <span class="tag">After Effects</span>
+        <span class="tag">Face swap</span>
+        <span class="tag">VFX</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      <h3>AI-Assisted Generation</h3>
+      <p>Style transfers, AI image generation and inpainting, custom model outputs. Combining generative AI with manual refinement for polished, client-ready results.</p>
+      <div class="service-tags">
+        <span class="tag">Stable Diffusion</span>
+        <span class="tag">ComfyUI</span>
+        <span class="tag">Inpainting</span>
+        <span class="tag">Upscaling</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <p class="section-label">Selected work</p>
+  <h2 class="section-title reveal">Examples of what's possible</h2>
+
+  <div class="portfolio-grid">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>Your image here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>Background Composite</h4>
+        <p>Compositing · Photo</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>Your image here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>Portrait Retouch</h4>
+        <p>Retouching · Photo</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+          </svg>
+          <span>Your clip here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>Face Replacement</h4>
+        <p>VFX · Video</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>Your image here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>AI Style Transfer</h4>
+        <p>AI Generation · Photo</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+          </svg>
+          <span>Your clip here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>Short Film Colour Grade</h4>
+        <p>Colour · Video</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <div class="portfolio-placeholder-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>Your image here</span>
+        </div>
+      </div>
+      <div class="portfolio-overlay">
+        <h4>Inpainting Edit</h4>
+        <p>AI Generation · Photo</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="portfolio-note reveal">
+    Portfolio images coming soon — replace the placeholders above with your own work by dropping images into the project folder and updating the <code>src</code> attributes.
+  </p>
+</section>
+
+<section id="about">
+  <div class="about-copy">
+    <p class="section-label" style="color: rgba(207,159,82,0.8);">About</p>
+    <h2 class="section-title reveal">A trained eye and the right tools</h2>
+    <p class="about-body reveal">
+      I specialise in photo and video editing that goes beyond the surface — complex composites, seamless retouching, VFX work, and AI-augmented workflows that let me tackle commissions that most editors can't deliver. Every project is handled with discretion and attention to detail.
+    </p>
+    <div class="about-stats reveal">
+      <div class="stat-item">
+        <div class="stat-number">5+</div>
+        <div class="stat-label">Years editing</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">200+</div>
+        <div class="stat-label">Projects delivered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">24h</div>
+        <div class="stat-label">Typical turnaround</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Confidential</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-tools reveal">
+    <p class="section-label" style="color: rgba(207,159,82,0.7); margin-bottom: 32px;">Toolset</p>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">Photoshop</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:95%"></div></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">After Effects</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:85%; animation-delay:0.1s"></div></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">Premiere Pro</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:88%; animation-delay:0.2s"></div></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">ComfyUI / SD</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:90%; animation-delay:0.3s"></div></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">DaVinci Resolve</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:75%; animation-delay:0.4s"></div></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-name" style="color:rgba(245,244,237,0.6);">Topaz / Magnific</span>
+      <div class="tool-bar"><div class="tool-bar-fill" style="width:80%; animation-delay:0.5s"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-intro">
+    <p class="section-label">Get in touch</p>
+    <h2 class="section-title reveal">Let's talk about your project</h2>
+    <p class="reveal">
+      Send a message with the details of what you need. Most commissions are turned around within 24 hours. Check your spam folder for my reply — it sometimes ends up there.
+    </p>
+    <div class="contact-links reveal">
+      <a href="https://x.com/Dr911FakerAI" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+        @Dr911FakerAI on X
+      </a>
+      <a href="https://www.instagram.com/drfakersmut/" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913a5.885 5.885 0 0 0 1.384 2.126A5.868 5.868 0 0 0 4.14 23.37c.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558a5.898 5.898 0 0 0 2.126-1.384 5.86 5.86 0 0 0 1.384-2.126c.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913a5.89 5.89 0 0 0-1.384-2.126A5.847 5.847 0 0 0 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227a3.81 3.81 0 0 1-.899 1.382 3.744 3.744 0 0 1-1.38.896c-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421a3.716 3.716 0 0 1-1.379-.899 3.644 3.644 0 0 1-.9-1.38c-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
+        @drfakersmut on Instagram
+      </a>
+      <a href="https://discord.gg/mUJZWxRaT7" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.222 0c1.406 0 2.54 1.137 2.607 2.475V24l-2.677-2.273-1.47-1.338-1.604-1.398.67 2.205H3.71c-1.402 0-2.54-1.065-2.54-2.476V2.48C1.17 1.142 2.31.003 3.715.003h16.5L20.222 0zm-6.118 5.683h-.03l-.202.2c2.073.6 3.076 1.537 3.076 1.537-1.336-.668-2.54-1.002-3.744-1.137-.87-.135-1.74-.064-2.475 0h-.2c-.47 0-1.47.2-2.81.735-.467.203-.735.336-.735.336s1.002-1.002 3.21-1.537l-.135-.135s-1.672-.064-3.477 1.27c0 0-1.805 3.144-1.805 7.02 0 0 1 1.74 3.743 1.806 0 0 .4-.533.805-1.002-1.54-.468-2.14-1.404-2.14-1.404s.134.066.335.2h.06c.03 0 .044.015.06.03v.006c.016.016.03.03.06.03.33.136.66.27.93.4a8.18 8.18 0 0 0 1.8.536c.93.135 1.996.2 3.21 0 .6-.135 1.2-.267 1.8-.535.39-.2.87-.4 1.397-.737 0 0-.6.936-2.205 1.404.33.466.795 1 .795 1 2.744-.06 3.81-1.8 3.87-1.726 0-3.87-1.815-7.02-1.815-7.02-1.635-1.214-3.165-1.26-3.435-1.26l.056-.02zm.168 4.413c.703 0 1.27.6 1.27 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334.002-.74.573-1.338 1.27-1.338zm-4.543 0c.7 0 1.266.6 1.266 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334 0-.74.57-1.338 1.27-1.338z"/></svg>
+        Discord server
+      </a>
+    </div>
+  </div>
+
+  <div>
+    <form action="https://formspree.io/f/mwpodbre" method="POST" class="form reveal">
+      <input type="hidden" name="next" value="#contact-sent">
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+      </div>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="_replyto" placeholder="your@email.com" required>
+      </div>
+      <div class="form-field">
+        <label for="service">Service</label>
+        <select id="service" name="service">
+          <option value="">Select a service…</option>
+          <option value="photo">Photo Retouching / Compositing</option>
+          <option value="video">Video Editing / VFX</option>
+          <option value="ai">AI-Assisted Generation</option>
+          <option value="other">Other / Not sure</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="message">Project details</label>
+        <textarea id="message" name="message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send request →</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">Nudifi</span>
+  <span class="footer-copy">© 2025 Nudifi. All work is confidential.</span>
+  <div class="footer-socials">
+    <a href="https://x.com/Dr911FakerAI" target="_blank" aria-label="X">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/drfakersmut/" target="_blank" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913a5.885 5.885 0 0 0 1.384 2.126A5.868 5.868 0 0 0 4.14 23.37c.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558a5.898 5.898 0 0 0 2.126-1.384 5.86 5.86 0 0 0 1.384-2.126c.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913a5.89 5.89 0 0 0-1.384-2.126A5.847 5.847 0 0 0 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227a3.81 3.81 0 0 1-.899 1.382 3.744 3.744 0 0 1-1.38.896c-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421a3.716 3.716 0 0 1-1.379-.899 3.644 3.644 0 0 1-.9-1.38c-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
+    </a>
+    <a href="https://discord.gg/mUJZWxRaT7" target="_blank" aria-label="Discord">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.222 0c1.406 0 2.54 1.137 2.607 2.475V24l-2.677-2.273-1.47-1.338-1.604-1.398.67 2.205H3.71c-1.402 0-2.54-1.065-2.54-2.476V2.48C1.17 1.142 2.31.003 3.715.003h16.5L20.222 0zm-6.118 5.683h-.03l-.202.2c2.073.6 3.076 1.537 3.076 1.537-1.336-.668-2.54-1.002-3.744-1.137-.87-.135-1.74-.064-2.475 0h-.2c-.47 0-1.47.2-2.81.735-.467.203-.735.336-.735.336s1.002-1.002 3.21-1.537l-.135-.135s-1.672-.064-3.477 1.27c0 0-1.805 3.144-1.805 7.02 0 0 1 1.74 3.743 1.806 0 0 .4-.533.805-1.002-1.54-.468-2.14-1.404-2.14-1.404s.134.066.335.2h.06c.03 0 .044.015.06.03v.006c.016.016.03.03.06.03.33.136.66.27.93.4a8.18 8.18 0 0 0 1.8.536c.93.135 1.996.2 3.21 0 .6-.135 1.2-.267 1.8-.535.39-.2.87-.4 1.397-.737 0 0-.6.936-2.205 1.404.33.466.795 1 .795 1 2.744-.06 3.81-1.8 3.87-1.726 0-3.87-1.815-7.02-1.815-7.02-1.635-1.214-3.165-1.26-3.435-1.26l.056-.02zm.168 4.413c.703 0 1.27.6 1.27 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334.002-.74.573-1.338 1.27-1.338zm-4.543 0c.7 0 1.266.6 1.266 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334 0-.74.57-1.338 1.27-1.338z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Contact form success
+  if (window.location.hash === '#contact-sent') {
+    const form = document.querySelector('.form');
+    if (form) {
+      form.innerHTML = '<div style="padding:32px 0; text-align:center;"><h3 style="color:var(--primary); margin-bottom:12px;">Message sent!</h3><p style="color:var(--muted);">Check your spam folder — my reply usually arrives within 24 hours.</p></div>';
+    }
+  }
+
+  // ── DYNAMIC CAROUSEL ENGINE ──
+  const baseCarouselPath = '/home/admin/site/images/carousel/';
+  const carouselItems = [
+    { type: 'video', src: 'whore-teacher-classroom.mp4' },
+    { type: 'video', src: 'web_ltx2_00049-audio.mp4' },
+    { type: 'video', src: 'web_final2nokid.mp4' },
+    { type: 'video', src: 'web_hairy3.mp4' },
+    { type: 'video', src: 'web_3.mp4' },
+    { type: 'video', src: 'hairy-teacher-school-classroom.mp4' },
+    { type: 'image', src: 'Edit_00001_ (5).webp' },
+    { type: 'image', src: '8dba7bbf-d7d3-4d7d-a9d0-3a9d90194239.webp' },
+    { type: 'image', src: '00023-2565802499.webp' },
+    { type: 'image', src: '2025-10-24_14-18-19_7096.webp' },
+    { type: 'image', src: '2025-11-26_00-45-00_8881v2.png' },
+    { type: 'image', src: 'ComfyUI_00268_.webp' },
+    { type: 'image', src: 'ComfyUI_00292_.webp' },
+    { type: 'image', src: 'ComfyUI_00545_.webp' },
+    { type: 'image', src: 'piggyride.webp' },
+    { type: 'image', src: 'Flux2-Klein-4b-base_00220_.webp' },
+    { type: 'image', src: 'lara jungle flies hairy stench cen.webp' }
+  ];
+
+  let currentIndex = 0;
+  const totalBgBoxes = 18; // Increased depth count
+  const mediaMain = document.getElementById('mediaMain');
+  const heroMediaContainer = document.querySelector('.hero-media');
+
+  function createMediaElement(item, renderAutoplay = true) {
+    const fullPath = baseCarouselPath + item.src;
+    if (item.type === 'video') {
+      return `<video src="${fullPath}" ${renderAutoplay ? 'autoplay' : ''} loop muted playsinline></video>`;
+    }
+    return `<img src="${fullPath}" alt="Portfolio piece">`;
+  }
+
+  // Positions boxes layout randomly out beyond the main container so they're completely visible
+  function setupBackgroundBoxes() {
+    document.querySelectorAll('.media-bg-box').forEach(el => el.remove());
+
+    for (let i = 0; i < totalBgBoxes; i++) {
+      const box = document.createElement('div');
+      box.className = 'media-bg-box';
+
+      // Random sizes ranging widely from 80px to 240px
+      const size = Math.floor(Math.random() * 160) + 80;
+      box.style.width = `${size}px`;
+      box.style.height = `${size * 0.65}px`;
+
+      // Scattered offset percentages ensuring they drift way out to the sides, top, and bottom
+      const topPos = Math.floor(Math.random() * 110) - 10;   // -10% to 100%
+      const leftPos = Math.floor(Math.random() * 130) - 20;  // -20% to 110%
+      box.style.top = `${topPos}%`;
+      box.style.left = `${leftPos}%`;
+
+      // Soft depth-of-field blurs
+      const blurVal = Math.floor(Math.random() * 10) + 5;
+      box.style.filter = `blur(${blurVal}px)`;
+
+      // Angular shifts
+      const rotateDeg = Math.floor(Math.random() * 30) - 15;
+      box.style.transform = `rotate(${rotateDeg}deg)`;
+
+      // Loop over upcoming index assets to produce variation in the layout background cloud
+      const targetOffsetIndex = (currentIndex + i + 1) % carouselItems.length;
+      box.innerHTML = createMediaElement(carouselItems[targetOffsetIndex], true);
+
+      heroMediaContainer.insertBefore(box, mediaMain);
+    }
+  }
+
+  function updateCarousel(direction) {
+    if (direction === 'next') {
+      currentIndex = (currentIndex + 1) % carouselItems.length;
+    } else if (direction === 'prev') {
+      currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
+    }
+
+    mediaMain.innerHTML = createMediaElement(carouselItems[currentIndex], true);
+    setupBackgroundBoxes();
+  }
+
+  document.getElementById('previewLeft').addEventListener('click', () => updateCarousel('prev'));
+  document.getElementById('previewRight').addEventListener('click', () => updateCarousel('next'));
+
+  // Initial render trigger
+  if (carouselItems.length > 0) {
+    updateCarousel();
+  }
+</script>
+</body>
+</html>
