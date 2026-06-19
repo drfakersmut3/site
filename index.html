@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Nudifi — Visual Editor</title>
@@ -796,7 +797,7 @@
   <div class="contact-intro">
     <p class="section-label">Get in touch</p>
     <h2 class="section-title reveal">Let's talk about your project</h2>
-    <p class="reveal">Send a message with the details of what you need. Most commissions are turned around within 24 hours. Check your spam folder for my reply — it sometimes ends up there. ATTENTION! PROVE IN THE MESSAGE YOU ARE NOT A BOT OR YOU WILL NOT GET AN ANSWER!</p>
+    <p class="reveal">Send a message with the details of what you need. Most commissions are turned around within 24 hours. Check your spam folder for my reply — it sometimes ends up there.</p>
     <div class="contact-links reveal">
       <a href="https://x.com/smut3d" target="_blank" class="contact-link">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
@@ -807,28 +808,26 @@
         @drfakersmut on Instagram
       </a>
       <a href="https://discord.gg/mUJZWxRaT7" target="_blank" class="contact-link">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.222 0c1.406 0 2.54 1.137 2.607 2.475V24l-2.677-2.273-1.47-1.338-1.604-1.398.67 2.205H3.71c-1.402 0-2.54-1.065-2.54-2.476V2.48C1.17 1.142 2.31.003 3.715.003h16.5L20.222 0zm-6.118 5.683h-.03l-.202.2c2.073.6 3.076 1.537 3.076 1.537-1.336-.668-2.54-1.002-3.744-1.137-.87-.135-1.74-.064-2.475 0h-.2c-.47 0-1.47.2-2.81.735-.467.203-.735.336-.735.336s1.002-1.002 3.21-1.537l-.135-.135s-1.672-.064-3.477 1.27c0 0-1.805 3.144-1.805 7.02 0 0 1 1.74 3.743 1.806 0 0 .4-.533.805-1.002-1.54-.468-2.14-1.404-2.14-1.404s.134.066.335.2h.06c.03 0 .044.015.06.03v.006c.016.016.03.03.06.03.33.136.66.27.93.4a8.18 8.18 0 0 0 1.8.536c.93.135 1.996.2 3.21 0 .6-.135 1.2-.267 1.8-.535.39-.2.87-.4 1.397-.737 0 0-.6.936-2.205 1.404.33.466.795 1 .795 1 2.744-.06 3.81-1.8 3.87-1.726 0-3.87-1.815-7.02-1.815-7.02-1.635-1.214-3.165-1.26-3.435-1.26l.056-.02zm.168 4.413c.703 0 1.27.6 1.27 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334.002-.74.573-1.338 1.27-1.338zm-4.543 0c.7 0 1.266.6 1.266 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334 0-.74.57-1.338 1.27-1.338z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.222 0c1.406 0 2.54 1.137 2.607 2.475V24l-2.677-2.273-1.47-1.338-1.604-1.398.67 2.205H3.71c-1.402 0-2.54-1.065-2.54-2.476V2.48C1.17 1.142 2.31.003 3.715.003h16.5L20.222 0zm-6.118 5.683h-.03l-.202.2c2.073.6 3.076 1.537 3.076 1.537-1.336-.668-2.54-1.002-3.744-1.137-.87-.135-1.74-.064-2.475 0h-.2c-.47 0-1.47.2-2.81.735-.467.203-.735.336-.735.336s1.002-1.002 3.21-1.537l-.135-.135s-1.672-.064-3.477 1.27c0 0-1.805 3.144-1.805 7.02 0 0 1 1.74 3.743 1.806 0 0 .4-.533.805-1.002-1.54-.468-2.14-1.404-2.14-1.404s.134.066.335.2h.06c.03 0 .044.015.06.03v.006c.016.016.03.03.06.03.33.136.66.27.93.4 a8.18 8.18 0 0 0 1.8.536c.93.135 1.996.2 3.21 0 .6-.135 1.2-.267 1.8-.535.39-.2.87-.4 1.397-.737 0 0-.6.936-2.205 1.404.33.466.795 1 .795 1 2.744-.06 3.81-1.8 3.87-1.726 0-3.87-1.815-7.02-1.815-7.02-1.635-1.214-3.165-1.26-3.435-1.26l.056-.02zm.168 4.413c.703 0 1.27.6 1.27 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334.002-.74.573-1.338 1.27-1.338zm-4.543 0c.7 0 1.266.6 1.266 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.334 0-.74.57-1.338 1.27-1.338z"/></svg>
         Discord server
       </a>
     </div>
   </div>
   <div>
-    <form action="mailto:YOUR_GMAIL_ADDRESS@gmail.com" method="POST" enctype="text/plain" class="form reveal">
-      <!-- Hidden redirect input removed, as it's not needed for a mailto: form -->
-
+    <form action="https://formspree.io/f/mwpodbre" method="POST" class="form reveal">
       <div class="form-field">
         <label for="name">Name</label>
-        <input type="text" id="name" name="Name" placeholder="Your name" required>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
       </div>
 
       <div class="form-field">
         <label for="email">Email</label>
-        <input type="email" id="email" name="Email" placeholder="your@email.com" required>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required>
       </div>
 
       <div class="form-field">
         <label for="service">Service</label>
-        <select id="service" name="Service">
+        <select id="service" name="service">
           <option value="">Select a service…</option>
           <option value="photo">Photo Retouching / Compositing</option>
           <option value="video">Video Editing / VFX</option>
@@ -839,8 +838,11 @@
 
       <div class="form-field">
         <label for="message">Project details</label>
-        <textarea id="message" name="Message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea>
+        <textarea id="message" name="message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea>
       </div>
+
+      <!-- Cloudflare Turnstile Widget -->
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAABeig5GO7KB3iS08"></div>
 
       <button type="submit" class="form-submit">Send request →</button>
     </form>
