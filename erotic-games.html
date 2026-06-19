@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Nudifi — Erotic Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #15151c;
+    --neutral:   #f5f4ed;
+    --primary:   #cf9f52;
+    --secondary: #4a2125;
+    --tertiary:  #24313d;
+    --muted:     rgba(245,244,237,0.45);
+    --font-body: 'Rubik', sans-serif;
+    --radius:    6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--neutral);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(21,21,28,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .nav-logo {
+    font-size: 1.1rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--primary); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.875rem; letter-spacing: 0.05em; transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--neutral); }
+
+  /* ── GLOBAL SECTION STYLES ── */
+  section { padding: 96px 48px; }
+  .section-label {
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--primary); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--primary);
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 400;
+    line-height: 1.15; letter-spacing: -0.01em;
+    max-width: 600px; margin-bottom: 24px;
+  }
+  .body-text { color: rgba(245,244,237,0.75); line-height: 1.75; margin-bottom: 36px; }
+
+  /* ── HERO ── */
+  .page-header {
+    padding: 160px 48px 80px;
+    background: var(--bg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .page-header .section-label { justify-content: center; }
+  .page-header .section-label::before, .page-header .section-label::after {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--primary);
+  }
+
+  /* ── GAME SECTIONS ── */
+  .game-showcase {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-bottom: 1px solid rgba(245,244,237,0.06);
+  }
+  .game-showcase.reverse {
+    grid-template-columns: 1fr 1.2fr;
+    background: #111118;
+  }
+  .game-showcase.reverse .game-content {
+    order: -1;
+  }
+  .game-media {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--tertiary);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(207,159,82,0.15);
+  }
+  .game-media img, .game-media video {
+    width: 100%;
+    height: 100%;
+    /* Change 'cover' to 'contain' so images aren't cropped */
+    object-fit: contain;
+    /* Optional: adds a background color if the image doesn't fill the 16/9 aspect ratio */
+    background-color: #000;
+  }
+  .placeholder-inner {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; color: rgba(245,244,237,0.18);
+  }
+
+  /* ── PATREON CTA ── */
+  #patreon-support {
+    background: var(--secondary);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 120px 48px;
+  }
+  #patreon-support .section-title { color: var(--neutral); margin: 0 auto 24px auto; }
+  .patreon-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: #FF424D; /* Patreon Brand Color */
+    color: #fff;
+    text-decoration: none; font-weight: 600; font-size: 0.9rem;
+    letter-spacing: 0.05em; padding: 16px 40px;
+    border-radius: 50px; transition: opacity 0.2s, transform 0.2s;
+    margin-top: 24px;
+  }
+  .patreon-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0e0e14; padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(245,244,237,0.06);
+  }
+  .footer-logo { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--primary); }
+  .footer-copy { font-size: 0.78rem; color: rgba(245,244,237,0.3); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    section { padding: 72px 24px; }
+    .game-showcase, .game-showcase.reverse { grid-template-columns: 1fr; gap: 48px; }
+    .game-showcase.reverse .game-content { order: 1; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Nudifi</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="erotic-games.html" class="active">Games</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header class="page-header reveal">
+  <p class="section-label">Interactive Projects</p>
+  <h1 class="section-title">Erotic Games</h1>
+  <p class="body-text" style="max-width: 500px; margin: 0 auto;">
+    A collection of adult interactive visual novels and games I am currently developing.
+  </p>
+</header>
+
+<!-- GAME 1 -->
+<section id="game-1" class="game-showcase reveal">
+  <div class="game-media">
+    <!-- Replace src with your game 1 image -->
+    <img src="/home/admin/site/images/Lara's-Makeover.webp" alt="Game 1 Preview">
+    <div class="placeholder-inner" style="display:none;">
+      <span>Your Game 1 Image Here</span>
+    </div>
+  </div>
+  <div class="game-content">
+    <p class="section-label">Finished</p>
+    <h2 class="section-title">Lara's Makeover</h2>
+    <p class="body-text">
+      Short story featuring Lara Croft being bimbofied. Multi-choice: shaved or hairy. 3D Blender render.
+    </p>
+  </div>
+</section>
+
+<!-- GAME 2 -->
+<section id="game-2" class="game-showcase reverse reveal">
+  <div class="game-media">
+    <!-- Replace src with your game 2 image -->
+    <img src="/home/admin/site/images/lara-croft-subway-madeness.webp" alt="Game 2 Preview">
+    <div class="placeholder-inner" style="display:none;">
+      <span>Your Game 2 Image Here</span>
+    </div>
+  </div>
+  <div class="game-content">
+    <p class="section-label">Finished</p>
+    <h2 class="section-title">Lara Croft's Subway Madness</h2>
+    <p class="body-text">
+      Short story featuring Lara Croft losing her mind on the metro. Very public, contains humiliation, uncleanliness. 3D Blender render overlayed by Ai slop.
+    </p>
+  </div>
+</section>
+
+<!-- PATREON SUPPORT -->
+<section id="patreon-support" class="reveal">
+  <p class="section-label" style="color: rgba(245,244,237,0.7);">Support the Development</p>
+  <h2 class="section-title">Help bring these projects to life</h2>
+  <p class="body-text" style="max-width: 600px; margin: 0 auto;">
+    Creating high-quality visual assets and writing branching storylines takes hundreds of hours. Support me on Patreon to get exclusive content and to show your love.
+  </p>
+  <a href="https://patreon.com/drfakersmut" target="_blank" class="patreon-btn">
+    <svg viewBox="0 0 569 546" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g><circle cx="362.589" cy="204.589" r="204.589" fill="#fff"/><rect x="0" y="0" width="100" height="545.799" fill="#fff"/></g></svg>
+    Support me on Patreon
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Nudifi</div>
+  <div class="footer-copy">&copy; 2026 Nudifi. All rights reserved.</div>
+</footer>
+
+<script>
+  /* ── Intersection Observer for Scroll Reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

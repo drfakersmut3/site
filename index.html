@@ -232,7 +232,7 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* show full frame, no crop */
+    object-fit: cover;
     background: #111116;
   }
 
@@ -252,6 +252,35 @@
   .media-placeholder svg { width: 44px; height: 44px; opacity: 0.45; }
   .media-placeholder span {
     font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+
+  /* ── HOVER HINT (fading notification, top of main card) ── */
+  .media-hover-hint {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    padding: 6px 16px;
+    background: rgba(10,10,15,0.6);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(207,159,82,0.35);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--neutral);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: hintPulse 1.4s ease-in-out infinite;
+    transition: opacity 0.25s ease;
+  }
+  .media-hover-hint.hint-hidden {
+    opacity: 0 !important;
+    animation-play-state: paused;
+  }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.1; }
+    50%      { opacity: 1; }
   }
 
   /* ── CONTROLS OVERLAY (bottom of main card) ── */
@@ -418,7 +447,9 @@
   /* ── PORTFOLIO ── */
   #portfolio { background: #111118; }
   .portfolio-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: dense; /* Keeps the grid tight without blank gaps */
     gap: 12px;
   }
   .portfolio-item { position: relative; overflow: hidden; cursor: pointer; background: var(--tertiary); }
@@ -427,22 +458,14 @@
   .portfolio-placeholder { width: 100%; padding-top: 56.25%; position: relative; background: var(--tertiary); }
   .portfolio-item:nth-child(1) .portfolio-placeholder,
   .portfolio-item:nth-child(5) .portfolio-placeholder { padding-top: 42%; }
-  .portfolio-placeholder-inner {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 10px; color: rgba(245,244,237,0.18);
-    border: 1px dashed rgba(245,244,237,0.1);
-  }
-  .portfolio-placeholder-inner svg { width: 32px; height: 32px; opacity: 0.4; }
-  .portfolio-placeholder-inner span { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; }
 
-  /* Portfolio Media Fitting Fix */
-  .portfolio-video {
+  /* Fits the portfolio images cleanly */
+  .portfolio-video, .portfolio-img {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
-    object-fit: contain; /* Ensures images/videos scale without stretching/cropping */
+    object-fit: cover;
     display: block;
-    background: #000; /* Dark background so varied aspect ratios look clean */
+    background: var(--tertiary);
   }
 
   .portfolio-overlay {
@@ -569,8 +592,10 @@
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">Nudifi</a>
+ <a href="index.html" class="nav-logo">Nudifi</a>
   <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="erotic-games.html">Games</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#about">About</a></li>
@@ -604,6 +629,7 @@
       <div class="media-peek peek-prev" id="peekPrev" aria-hidden="true"></div>
 
       <div class="media-main" id="mediaMain">
+        <div class="media-hover-hint" id="hoverHint">Hover mouse over to keep playing and turn on sound! </div>
         <div class="media-main-inner" id="mediaInner"></div>
 
         <div class="media-controls" id="mediaControls">
@@ -670,7 +696,7 @@
       <h3>Video Editing &amp; VFX</h3>
       <p>Scene editing, colour correction, motion graphics, face replacement, and visual effects. Suitable for short films, social content, and commercial projects.</p>
       <div class="service-tags">
-        <span class="tag">Premiere</span><span class="tag">After Effects</span>
+        <span class="tag">Blender</span><span class="tag">Blender</span>
         <span class="tag">Face swap</span><span class="tag">VFX</span>
       </div>
     </div>
@@ -693,40 +719,52 @@
 <section id="portfolio">
   <p class="section-label">Selected work</p>
   <h2 class="section-title reveal">Examples of what's possible</h2>
-  <div class="portfolio-grid">
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <video class="portfolio-video" src="images/carousel/comparison_web.mp4" autoplay loop muted playsinline></video>
-      </div>
-      <div class="portfolio-overlay"><h4>Video Character Replacement</h4><p>Basically a video body swap</p></div>
+ <div class="portfolio-grid">
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <video class="portfolio-video" src="images/carousel/comparison_web.mp4" autoplay loop muted playsinline style="object-fit: contain;"></video>
     </div>
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <img class="portfolio-video" src="images/other images/inpaint-reference.webp" alt="Portrait retouch example">
-      </div>
-      <div class="portfolio-overlay"><h4>Inpaint with Image Reference</h4><p>With or without reference</p></div>
+    <div class="portfolio-overlay"><h4>Video Character Replacement</h4><p>Basically a video body swap</p></div>
+  </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/other images/inpaint-reference.webp" alt="Inpaint with reference" style="object-fit: contain;">
     </div>
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <img class="portfolio-video" src="images/2025-12-18_15-33-10_1910.webp" alt="Face Replacement">
-      </div>
+    <div class="portfolio-overlay"><h4>Inpaint with Image Reference</h4><p>With or without reference</p></div>
+  </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/lisa3.webp" alt="Transform anime/cartoon to real life" style="object-fit: contain;">
     </div>
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <img class="portfolio-video" src="images/2025-10-24_13-58-46_7623.webp" alt="AI Style Transfer">
-      </div>
-    </div>
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <img class="portfolio-video" src="images/poo in the loo.webp" alt="Short Film Colour Grade">
-      </div>
-    </div>
-    <div class="portfolio-item reveal">
-      <div class="portfolio-placeholder">
-        <img class="portfolio-video" src="images/pissgirl10.png" alt="Inpainting Edit">
-      </div>
+    <div class="portfolio-overlay"><h4>Transform anime/cartoon to real life.</h4><p>AI Generation · Photo</p></div>
+  </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/2025-12-18_15-33-10_1910.webp" alt="Face Replacement" style="object-fit: contain;">
     </div>
   </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/2025-10-24_13-58-46_7623.webp" alt="AI Style Transfer" style="object-fit: contain;">
+    </div>
+  </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/poo in the loo.webp" alt="Short Film Colour Grade" style="object-fit: contain;">
+    </div>
+  </div>
+
+  <div class="portfolio-item reveal">
+    <div class="portfolio-placeholder">
+      <img class="portfolio-video" src="images/pissgirl10.png" alt="Inpainting Edit" style="object-fit: contain;">
+    </div>
+  </div>
+</div>
 </section>
 
 <section id="about">
@@ -737,7 +775,7 @@
       I specialise in photo and video editing that goes beyond the surface — complex composites, seamless retouching, VFX work, and AI-augmented workflows that let me tackle commissions that most editors can't deliver. Every project is handled with discretion and attention to detail.
     </p>
     <div class="about-stats reveal">
-      <div class="stat-item"><div class="stat-number">5+</div><div class="stat-label">Years editing</div></div>
+      <div class="stat-item"><div class="stat-number">12+</div><div class="stat-label">Years editing</div></div>
       <div class="stat-item"><div class="stat-number">200+</div><div class="stat-label">Projects delivered</div></div>
       <div class="stat-item"><div class="stat-number">24h</div><div class="stat-label">Typical turnaround</div></div>
       <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Confidential</div></div>
@@ -746,7 +784,7 @@
   <div class="about-tools reveal">
     <p class="section-label" style="color:rgba(207,159,82,0.7);margin-bottom:32px;">Toolset</p>
     <div class="tool-row"><span class="tool-name">Photoshop</span><div class="tool-bar"><div class="tool-bar-fill" style="width:95%"></div></div></div>
-    <div class="tool-row"><span class="tool-name">After Effects</span><div class="tool-bar"><div class="tool-bar-fill" style="width:85%;animation-delay:0.1s"></div></div></div>
+    <div class="tool-row"><span class="tool-name">Blender</span><div class="tool-bar"><div class="tool-bar-fill" style="width:85%;animation-delay:0.1s"></div></div></div>
     <div class="tool-row"><span class="tool-name">Premiere Pro</span><div class="tool-bar"><div class="tool-bar-fill" style="width:88%;animation-delay:0.2s"></div></div></div>
     <div class="tool-row"><span class="tool-name">ComfyUI / SD</span><div class="tool-bar"><div class="tool-bar-fill" style="width:90%;animation-delay:0.3s"></div></div></div>
     <div class="tool-row"><span class="tool-name">DaVinci Resolve</span><div class="tool-bar"><div class="tool-bar-fill" style="width:75%;animation-delay:0.4s"></div></div></div>
@@ -760,9 +798,9 @@
     <h2 class="section-title reveal">Let's talk about your project</h2>
     <p class="reveal">Send a message with the details of what you need. Most commissions are turned around within 24 hours. Check your spam folder for my reply — it sometimes ends up there. ATTENTION! PROVE IN THE MESSAGE YOU ARE NOT A BOT OR YOU WILL NOT GET AN ANSWER!</p>
     <div class="contact-links reveal">
-      <a href="https://x.com/Dr911FakerAI" target="_blank" class="contact-link">
+      <a href="https://x.com/smut3d" target="_blank" class="contact-link">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-        @Dr911FakerAI on X
+        @Smut3D on X
       </a>
       <a href="https://www.instagram.com/drfakersmut/" target="_blank" class="contact-link">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913a5.885 5.885 0 0 0 1.384 2.126A5.868 5.868 0 0 0 4.14 23.37c.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558a5.898 5.898 0 0 0 2.126-1.384 5.86 5.86 0 0 0 1.384-2.126c.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913a5.89 5.89 0 0 0-1.384-2.126A5.847 5.847 0 0 0 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227a3.81 3.81 0 0 1-.899 1.382 3.744 3.744 0 0 1-1.38.896c-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421a3.716 3.716 0 0 1-1.379-.899 3.644 3.644 0 0 1-.9-1.38c-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
@@ -775,13 +813,22 @@
     </div>
   </div>
   <div>
-    <form action="https://formspree.io/f/mwpodbre" method="POST" class="form reveal">
-      <input type="hidden" name="next" value="#contact-sent">
-      <div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" placeholder="Your name" required></div>
-      <div class="form-field"><label for="email">Email</label><input type="email" id="email" name="_replyto" placeholder="your@email.com" required></div>
+    <form action="mailto:YOUR_GMAIL_ADDRESS@gmail.com" method="POST" enctype="text/plain" class="form reveal">
+      <!-- Hidden redirect input removed, as it's not needed for a mailto: form -->
+
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="Name" placeholder="Your name" required>
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="Email" placeholder="your@email.com" required>
+      </div>
+
       <div class="form-field">
         <label for="service">Service</label>
-        <select id="service" name="service">
+        <select id="service" name="Service">
           <option value="">Select a service…</option>
           <option value="photo">Photo Retouching / Compositing</option>
           <option value="video">Video Editing / VFX</option>
@@ -789,7 +836,12 @@
           <option value="other">Other / Not sure</option>
         </select>
       </div>
-      <div class="form-field"><label for="message">Project details</label><textarea id="message" name="message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea></div>
+
+      <div class="form-field">
+        <label for="message">Project details</label>
+        <textarea id="message" name="Message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea>
+      </div>
+
       <button type="submit" class="form-submit">Send request →</button>
     </form>
   </div>
@@ -883,6 +935,7 @@ const iconPlay      = document.getElementById('iconPlay');
 const iconPause     = document.getElementById('iconPause');
 const iconVolOn     = document.getElementById('iconVolOn');
 const iconVolOff    = document.getElementById('iconVolOff');
+const hoverHint      = document.getElementById('hoverHint');
 
 let current     = 0;
 let timer       = null;
@@ -1102,6 +1155,7 @@ mainCard.addEventListener('mouseenter', () => {
   hovered = true;
   clearInterval(timer);
   if (!videoPaused) progressFill.classList.add('paused');
+  hoverHint.classList.add('hint-hidden');
 });
 mainCard.addEventListener('mouseleave', () => {
   hovered = false;
@@ -1113,6 +1167,7 @@ mainCard.addEventListener('mouseleave', () => {
   /* close volume panel on mouse leave */
   volOpen = false;
   volumeWrap.classList.remove('open');
+  hoverHint.classList.remove('hint-hidden');
 });
 
 /* ── Peek clicks: advance ── */
