@@ -5,6 +5,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Nudifi — Visual Editor</title>
+
+<!-- Preloads the first video instantly for a better Lighthouse LCP score -->
+<link rel="preload" as="video" href="images/carousel/web_final2nokid.mp4" type="video/mp4">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -56,6 +60,9 @@
     font-size: 0.875rem; letter-spacing: 0.05em; transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--neutral); }
+
+  /* Hide the mobile link by default on desktop */
+  .nav-links li.mobile-only { display: none; }
 
   /* ── HERO ── */
   .hero {
@@ -212,12 +219,13 @@
   .media-main-inner {
     position: relative;
     width: 100%;
+    /* STRICT ASPECT RATIO TO PREVENT LIGHTHOUSE PENALTY */
     aspect-ratio: 16 / 9;
-    min-height: 260px;
     background: #111116;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
 
   .media-main-inner video,
@@ -225,14 +233,13 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     background: #111116;
   }
 
   .media-placeholder {
     width: 100%;
     height: 100%;
-    min-height: 340px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -467,12 +474,6 @@
   .portfolio-item:hover .portfolio-overlay { opacity: 1; }
   .portfolio-overlay h4 { font-size: 1rem; font-weight: 500; margin-bottom: 4px; }
   .portfolio-overlay p  { font-size: 0.78rem; color: var(--primary); letter-spacing: 0.06em; text-transform: uppercase; }
-  .portfolio-note {
-    margin-top: 32px; padding: 20px 24px;
-    background: rgba(207,159,82,0.08); border-left: 2px solid var(--primary);
-    font-size: 0.875rem; color: var(--muted);
-    border-radius: 0 var(--radius) var(--radius) 0; max-width: 560px;
-  }
 
   /* ── ABOUT ── */
   #about {
@@ -552,10 +553,9 @@
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.visible { opacity: 1; transform: none; }
 
-  /* ── RESPONSIVE ── */
+  /* ── RESPONSIVE / MOBILE SPECIFIC ── */
   @media (max-width: 900px) {
     nav { padding: 18px 24px; }
-    .nav-links { gap: 20px; }
     section { padding: 72px 24px; }
     .hero { padding: 100px 24px 64px; }
     .portfolio-grid { grid-template-columns: 1fr 1fr; }
@@ -565,27 +565,28 @@
     footer { flex-direction: column; gap: 16px; text-align: center; }
   }
 
-  /* ── MOBILE SPECIFIC ── */
-  @media (max-width: 600px) {
+  /* FORCED MOBILE MENU FIX */
+  @media (max-width: 768px) {
     nav { padding: 15px 20px; }
+    .nav-logo { font-size: 0.9rem; }
 
-    /* Reveal the nav links container but hide standard links */
     .nav-links {
-      display: flex;
+      display: flex !important;
       gap: 16px;
       overflow: visible;
       padding: 0;
       margin: 0;
     }
-    .nav-links li { display: none; }
 
-    /* Explicitly show the Erotic Games link */
+    /* Force hide standard links */
+    .nav-links li:not(.mobile-only) { display: none !important; }
+
+    /* Force show Erotic Games link */
     .nav-links li.mobile-only {
-      display: block;
+      display: block !important;
       margin-right: 0;
     }
 
-    .nav-logo { font-size: 0.9rem; }
     .portfolio-grid { grid-template-columns: 1fr; }
     .portfolio-item:nth-child(1),
     .portfolio-item:nth-child(5) { grid-column: span 1; }
@@ -879,8 +880,10 @@
         <textarea id="message" name="message" rows="5" placeholder="Describe what you need — the more detail the better." required></textarea>
       </div>
 
+      <!-- Cloudflare Turnstile Widget -->
       <div class="cf-turnstile" data-sitekey="0x4AAAAAABeig5GO7KB3iS08"></div>
 
+<!-- Formspree Honeypot -->
 <input type="text" name="_gotcha" style="display:none" />
       <button type="submit" class="form-submit">Send request →</button>
     </form>
@@ -955,12 +958,12 @@ const iconPlay      = document.getElementById('iconPlay');
 const iconPause     = document.getElementById('iconPause');
 const iconVolOn     = document.getElementById('iconVolOn');
 const iconVolOff    = document.getElementById('iconVolOff');
-const hoverHint      = document.getElementById('hoverHint');
+const hoverHint     = document.getElementById('hoverHint');
 
 let current     = 0;
 let timer       = null;
 let hovered     = false;
-let videoPaused = false;      // user-initiated pause state
+let videoPaused = false;      /* user-initiated pause state */
 let volOpen     = false;
 const INTERVAL  = 3000;
 
@@ -1015,11 +1018,6 @@ function buildMainContent(slide) {
     v.playsInline = true;
     v.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#111116;display:block;';
 
-    /* set inner height from natural video size once metadata loads */
-    v.addEventListener('loadedmetadata', () => {
-      setMainHeight(v.videoWidth, v.videoHeight);
-    });
-
     mediaInner.appendChild(v);
 
     /* show video controls */
@@ -1034,22 +1032,16 @@ function buildMainContent(slide) {
     img.src = slide.src;
     img.alt = 'Hero showcase';
 
-    // ADDED: Performance optimization attributes
+    /* Performance optimization attributes */
     img.setAttribute('fetchpriority', 'high');
     img.setAttribute('width', '1920');
     img.setAttribute('height', '1080');
 
     img.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#111116;display:block;';
-
-    img.addEventListener('load', () => {
-      setMainHeight(img.naturalWidth, img.naturalHeight);
-    });
-
     mediaInner.appendChild(img);
 
   } else {
     /* placeholder */
-    mediaInner.style.height = '360px';
     const isVid = slide.label && slide.label.toLowerCase().includes('video');
     mediaInner.innerHTML = `
       <div class="media-placeholder">
@@ -1061,17 +1053,6 @@ function buildMainContent(slide) {
         <span>${slide.label}</span>
       </div>`;
   }
-}
-
-/* ── Set inner height from natural dimensions ── */
-function setMainHeight(nw, nh) {
-  if (!nw || !nh) return;
-  /* measure the card's rendered width */
-  const cardW = mediaInner.offsetWidth || mediaInner.parentElement.offsetWidth || 480;
-  const h = Math.round((nh / nw) * cardW);
-  /* clamp: never taller than 80vh */
-  const maxH = Math.round(window.innerHeight * 0.80);
-  mediaInner.style.height = Math.min(h, maxH) + 'px';
 }
 
 /* ── Play / Pause icon sync ── */
