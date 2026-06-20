@@ -38,31 +38,47 @@
   }
 
   /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 48px;
-    background: linear-gradient(to bottom, rgba(21,21,28,0.95), transparent);
-    backdrop-filter: blur(4px);
-  }
-  .nav-logo {
-    font-size: 1.1rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--primary); text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a {
-    color: var(--muted); text-decoration: none;
-    font-size: 0.875rem; letter-spacing: 0.05em; transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--neutral); }
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  background: linear-gradient(to bottom, rgba(21,21,28,0.95), transparent);
+  backdrop-filter: blur(4px);
+}
+.nav-logo {
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--primary); text-decoration: none;
+}
+.nav-links { display: flex; gap: 36px; list-style: none; }
 
-  /* Hide the mobile link by default on desktop */
-  .nav-links li.mobile-only { display: none; }
+/* Ensure all list items display normally on desktop */
+.nav-links li { display: block; }
+
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.875rem; letter-spacing: 0.05em; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--neutral); }
+
+/* ── MOBILE OVERRIDES FOR NAV ── */
+/* Place this at the bottom of your CSS styles */
+@media (max-width: 768px) {
+  nav { padding: 15px 20px; }
+  .nav-links { gap: 0; }
+
+  /* Hide the standard links on mobile to save space */
+  .nav-links li { display: none; }
+
+  /* Force ONLY the Erotic Games tab to appear on mobile */
+  .nav-links li.mobile-only {
+    display: block !important;
+  }
+}
 
   /* ── HERO ── */
   .hero {
@@ -598,7 +614,7 @@
 <body>
 
 <nav>
- <a href="index.html" class="nav-logo">Nudifi</a>
+  <a href="index.html" class="nav-logo">Nudifi</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li class="mobile-only"><a href="erotic-games.html">Erotic Games</a></li>
