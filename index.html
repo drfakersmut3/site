@@ -578,18 +578,22 @@
     footer { flex-direction: column; gap: 16px; text-align: center; }
   }
   @media (max-width: 600px) {
-    .nav-links { display: none; }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .portfolio-item:nth-child(1),
-    .portfolio-item:nth-child(5) { grid-column: span 1; }
-    .about-stats { grid-template-columns: 1fr 1fr; }
-    .media-peek { display: none; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .tool-bar-fill { animation: none; transform: scaleX(1); }
-    .media-progress-fill { animation: none; transform: scaleX(1); }
-  }
+  /* Hide all items by default in the list */
+  .nav-links li { display: none; }
+
+  /* Show ONLY the item with the .mobile-only class */
+  .nav-links li.mobile-only { display: block; }
+
+  /* Ensure the links container stays visible */
+  .nav-links { display: flex; }
+
+  /* Keep your other mobile overrides */
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-item:nth-child(1),
+  .portfolio-item:nth-child(5) { grid-column: span 1; }
+  .about-stats { grid-template-columns: 1fr 1fr; }
+  .media-peek { display: none; }
+}
 </style>
 </head>
 <body>
@@ -598,7 +602,7 @@
  <a href="index.html" class="nav-logo">Nudifi</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="erotic-games.html">Games</a></li>
+    <li class="mobile-only"><a href="erotic-games.html">Erotic Games</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#about">About</a></li>
