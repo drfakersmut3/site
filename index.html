@@ -217,10 +217,12 @@
   }
 
   /* Inner wrapper: preserves natural aspect ratio */
+  /* Inner wrapper: preserves natural aspect ratio */
   .media-main-inner {
     position: relative;
     width: 100%;
-    /* height set by JS based on detected aspect ratio */
+    /* ADDED: Default aspect ratio to prevent CLS before JS loads */
+    aspect-ratio: 16 / 9;
     min-height: 260px;
     background: #111116;
     display: flex;
@@ -720,52 +722,108 @@
 <section id="portfolio">
   <p class="section-label">Selected work</p>
   <h2 class="section-title reveal">Examples of what's possible</h2>
- <div class="portfolio-grid">
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <video class="portfolio-video" src="images/carousel/comparison_web.mp4" autoplay loop muted playsinline style="object-fit: contain;"></video>
-    </div>
-    <div class="portfolio-overlay"><h4>Video Character Replacement</h4><p>Basically a video body swap</p></div>
-  </div>
+  <div class="portfolio-grid">
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/other images/inpaint-reference.webp" alt="Inpaint with reference" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <video class="portfolio-video" src="images/carousel/comparison_web.mp4" autoplay loop muted playsinline style="object-fit: contain;"></video>
+      </div>
+      <div class="portfolio-overlay"><h4>Video Character Replacement</h4><p>Basically a video body swap</p></div>
     </div>
-    <div class="portfolio-overlay"><h4>Inpaint with Image Reference</h4><p>With or without reference</p></div>
-  </div>
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/lisa3.webp" alt="Transform anime/cartoon to real life" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/other images/inpaint-reference.webp" alt="Inpaint with reference" style="object-fit: contain;" width="1436" height="381">
+      </div>
+      <div class="portfolio-overlay"><h4>Inpaint with Image Reference</h4><p>With or without reference</p></div>
     </div>
-    <div class="portfolio-overlay"><h4>Transform anime/cartoon to real life.</h4><p>AI Generation · Photo</p></div>
-  </div>
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/2025-12-18_15-33-10_1910.webp" alt="Face Replacement" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/lisa3.webp" alt="Transform anime/cartoon to real life" style="object-fit: contain;" width="2430" height="720">
+      </div>
+      <div class="portfolio-overlay"><h4>Transform anime/cartoon to real life.</h4><p>AI Generation · Photo</p></div>
     </div>
-  </div>
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/2025-10-24_13-58-46_7623.webp" alt="AI Style Transfer" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/2025-12-18_15-33-10_1910.webp" alt="Face Replacement" style="object-fit: contain;" width="1365" height="768">
+      </div>
     </div>
-  </div>
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/poo in the loo.webp" alt="Short Film Colour Grade" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/2025-10-24_13-58-46_7623.webp" alt="AI Style Transfer" style="object-fit: contain;" width="1408" height="768">
+      </div>
     </div>
-  </div>
 
-  <div class="portfolio-item reveal">
-    <div class="portfolio-placeholder">
-      <img class="portfolio-video" src="images/pissgirl10.png" alt="Inpainting Edit" style="object-fit: contain;">
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/poo-in-the-loo.webp" alt="Short Film Colour Grade" style="object-fit: contain;" width="1024" height="1024">
+      </div>
     </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/pissgirl10.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/tentacle-ai-request-image.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1520" height="1960">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/Lara-Croft-and-homeless-man.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1408" height="768">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/nude-flexible-teacher-classroom-school.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/girl-hairy-bikini-peek-spill-poking-out.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/lara ass.webp" alt="Inpainting Edit" style="object-fit: contain;" width="832" height="1512">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/new lara magazine.webp" alt="Inpainting Edit" style="object-fit: contain;" width="2039" height="2323">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/school-teacher-sexy-micro-skirt-ass-classroom.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/teacher-school-class-upskirt-mini-skirt.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <div class="portfolio-placeholder">
+        <img class="portfolio-video" src="images/tenttacle-ai-nude-porn.webp" alt="Inpainting Edit" style="object-fit: contain;" width="1024" height="1024">
+      </div>
+    </div>
+
   </div>
-</div>
 </section>
 
 <section id="about">
@@ -920,7 +978,7 @@ const slides = [
   { type: 'image', src: BASE + 'piggyride.webp'                           },
   { type: 'image', src: BASE + 'lara jungle flies hairy stench cen.webp'  },
   { type: 'image', src: BASE + 'Edit_00001_(5).webp'                      },
-  { type: 'image', src: BASE + '2025-11-26_00-45-00_8881v2.png'           },
+  { type: 'image', src: BASE + 'diablo2-amazon-sexy-ai.webp'           },
   { type: 'image', src: BASE + '2025-10-24_14-18-19_7096.webp'            },
   { type: 'image', src: BASE + '8dba7bbf-d7d3-4d7d-a9d0-3a9d90194239.webp'},
 ];
