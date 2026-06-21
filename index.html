@@ -68,8 +68,23 @@
   }
   .nav-links a:hover { color: var(--neutral); }
 
-  /* Hide the Erotic Games link by default on desktop */
-  .nav-links li.mobile-only { display: none; }
+  /* Erotic Games badge — always visible, sits between the logo and the main nav links */
+  .nav-erotic-badge {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    padding: 6px 16px;
+    border: 1px solid var(--primary);
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .nav-erotic-badge:hover {
+    background: var(--primary);
+    color: var(--bg);
+  }
 
   /* ── HERO ── */
   .hero {
@@ -572,18 +587,7 @@
       gap: 12px 20px;
       flex-wrap: wrap;
       justify-content: flex-end;
-    }
-    .nav-links li.mobile-only {
-      display: block;
-    }
-    .nav-links li.mobile-only a {
-      color: var(--primary);
-      font-weight: 500;
-      border-bottom: 1px dashed var(--primary);
-      padding-bottom: 1px;
-    }
-    .nav-links li:not(.mobile-only) {
-      display: block;
+      max-width: 100%;
     }
 
     section { padding: 72px 24px; }
@@ -612,8 +616,15 @@
       text-align: center;
       padding: 12px 16px;
     }
+    .nav-erotic-badge {
+      font-size: 0.72rem;
+      padding: 5px 14px;
+    }
     .nav-links {
       justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 100%;
       gap: 8px 14px;
     }
   }
@@ -623,9 +634,9 @@
 
 <nav>
  <a href="index.html" class="nav-logo">Nudifi</a>
+  <a href="erotic-games.html" class="nav-erotic-badge">Erotic Games</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li class="mobile-only"><a href="erotic-games.html">Erotic Games</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#about">About</a></li>
