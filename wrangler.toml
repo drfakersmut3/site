@@ -10,8 +10,8 @@ routes = [
 ]
 
 [vars]
-TO_EMAIL = "[drfaker911@gmail.com]"
-FROM_EMAIL = "Nudifi Contact <[email protected]>"
+TO_EMAIL = "drfaker911@gmail.com"
+FROM_EMAIL = "Nudifi Contact <contact@nudify-her.com>"
 REDIRECT_URL = "https://nudify-her.com/#contact-sent"
 
 # Secrets are NOT set here. Run these once after creating the Worker:

@@ -37,6 +37,14 @@ export default {
       return Response.redirect(env.REDIRECT_URL, 303);
     }
 
+    // --- Fill-time trap: real humans take at least a couple seconds to
+    // read the form and type. Scripted submissions (and many outreach
+    // tools) fire almost instantly after page load. ---
+    const loadedAt = parseInt(form.get("ts") || "0", 10);
+    if (loadedAt && Date.now() - loadedAt < 2500) {
+      return Response.redirect(env.REDIRECT_URL, 303);
+    }
+
     // --- Turnstile verification ---
     const token = form.get("cf-turnstile-response");
     if (!token) {
@@ -69,6 +77,25 @@ export default {
 
     if (!name || !email || !message) {
       return new Response("Missing required fields", { status: 400 });
+    }
+
+    // --- Content filter: classic cold-outreach / SEO-pitch spam patterns.
+    // These pass Turnstile fine since they're often sent from a real browser,
+    // so this catches what the captcha can't. ---
+    const linkCount = (message.match(/https?:\/\/|www\./gi) || []).length;
+    const spamPhrases = [
+      "seo", "backlink", "guest post", "link building", "increase your traffic",
+      "google ranking", "social media marketing", "digital marketing agency",
+      "web design services", "outsource", "cryptocurrency", "investment opportunity",
+      "unsubscribe", "no longer wish to receive",
+    ];
+    const lowerMsg = message.toLowerCase();
+    const phraseHit = spamPhrases.some((p) => lowerMsg.includes(p));
+
+    if (linkCount >= 2 || phraseHit) {
+      // Silently accept without sending — keeps the visitor experience
+      // identical so a misfire doesn't look broken to a real client.
+      return Response.redirect(env.REDIRECT_URL, 303);
     }
 
     // --- Send via Resend ---
