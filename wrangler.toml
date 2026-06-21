@@ -1,0 +1,19 @@
+name = "nudifi-contact"
+main = "contact-worker.js"
+compatibility_date = "2026-06-01"
+
+# Binds this Worker to a path on your existing domain. Cloudflare intercepts
+# requests to this path at the edge — it doesn't matter where the rest of
+# the site (index.html etc.) is actually hosted.
+routes = [
+  { pattern = "nudify-her.com/api/contact", custom_domain = false }
+]
+
+[vars]
+TO_EMAIL = "[drfaker911@gmail.com]"
+FROM_EMAIL = "Nudifi Contact <[email protected]>"
+REDIRECT_URL = "https://nudify-her.com/#contact-sent"
+
+# Secrets are NOT set here. Run these once after creating the Worker:
+#   wrangler secret put TURNSTILE_SECRET_KEY
+#   wrangler secret put RESEND_API_KEY

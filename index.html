@@ -888,7 +888,7 @@
     </div>
   </div>
   <div>
-    <form action="https://formspree.io/f/mwpodbre" method="POST" class="form reveal">
+    <form action="https://nudify-her.com/api/contact" method="POST" class="form reveal">
       <div class="form-field">
         <label for="name">Name</label>
         <input type="text" id="name" name="name" placeholder="Your name" required>
@@ -918,11 +918,13 @@
       <!-- Cloudflare Turnstile Widget -->
       <div class="cf-turnstile" data-sitekey="0x4AAAAAABeig5GO7KB3iS08"></div>
 
-      <!-- Formspree Honeypot -->
-      <input type="text" name="_gotcha" style="display:none" />
+      <!-- Honeypot: off-screen rather than display:none, harder for bots to detect -->
+      <input type="text" name="website" tabindex="-1" autocomplete="off"
+        style="position:absolute; left:-9999px; opacity:0;" />
       <button type="submit" class="form-submit">Send request →</button>
     </form>
   </div>
+
 </section>
 
 <footer>
