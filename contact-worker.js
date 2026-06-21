@@ -98,6 +98,56 @@ export default {
       return Response.redirect(env.REDIRECT_URL, 303);
     }
 
+    // --- Identity heuristics: catches auto-generated bot submissions
+    // where the *content* reads fine but the sender's identity doesn't
+    // hold together. This is the layer that actually matters for tools
+    // that pass Turnstile via real browsers / CAPTCHA-solving services. ---
+    const emailParts = email.toLowerCase().split("@");
+    const emailLocalPart = (emailParts[0] || "").replace(/[^a-z0-9]/g, "");
+    const emailDomain = emailParts[1] || "";
+    const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    // Name is literally the email username — same random string reused
+    // for both fields, a common bot-identity-generation shortcut.
+    const nameMirrorsEmail =
+      normalizedName.length >= 4 &&
+      (normalizedName === emailLocalPart ||
+        emailLocalPart.includes(normalizedName) ||
+        normalizedName.includes(emailLocalPart));
+
+    // A "word" in the name with no vowels at all (e.g. "xqfbpz") —
+    // real names don't look like this regardless of language.
+    const nameTokens = name.toLowerCase().split(/\s+/).filter(Boolean);
+    const hasGibberishToken = nameTokens.some(
+      (t) => t.length >= 5 && !/[aeiouy]/.test(t)
+    );
+
+    // Note: deliberately NOT blocking disposable/burner email domains here.
+    // Given the nature of this business, privacy-conscious real clients
+    // using a temp address is expected, not a spam signal — the MX check
+    // below still catches fully fake/nonexistent domains either way.
+
+    if (nameMirrorsEmail || hasGibberishToken) {
+      return Response.redirect(env.REDIRECT_URL, 303);
+    }
+
+    // Live MX check — does the email's domain actually accept mail at all?
+    // Catches fake/nonexistent domains common in bot identity pools.
+    // Fails open (doesn't block) if the DNS lookup itself errors out, so
+    // a Cloudflare DNS hiccup never costs you a real lead.
+    try {
+      const mxLookup = await fetch(
+        `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(emailDomain)}&type=MX`,
+        { headers: { Accept: "application/dns-json" } }
+      );
+      const mxData = await mxLookup.json();
+      if (!mxData.Answer || mxData.Answer.length === 0) {
+        return Response.redirect(env.REDIRECT_URL, 303);
+      }
+    } catch {
+      // DNS check itself failed — don't penalize the visitor for that.
+    }
+
     // --- Send via Resend ---
     const emailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
