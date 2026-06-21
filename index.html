@@ -560,9 +560,32 @@
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.visible { opacity: 1; transform: none; }
 
-  /* ── RESPONSIVE / MOBILE SPECIFIC ── */
+  /* ── RESPONSIVE / TABLET & MOBILE BREAKPOINTS ── */
   @media (max-width: 900px) {
-    nav { padding: 18px 24px; }
+    nav {
+      padding: 16px 24px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-links {
+      gap: 12px 20px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links li.mobile-only {
+      display: block;
+    }
+    .nav-links li.mobile-only a {
+      color: var(--primary);
+      font-weight: 500;
+      border-bottom: 1px dashed var(--primary);
+      padding-bottom: 1px;
+    }
+    .nav-links li:not(.mobile-only) {
+      display: block;
+    }
+
     section { padding: 72px 24px; }
     .hero { padding: 100px 24px 64px; }
     .portfolio-grid { grid-template-columns: 1fr 1fr; }
@@ -572,37 +595,27 @@
     footer { flex-direction: column; gap: 16px; text-align: center; }
   }
 
-  /* FORCED MOBILE MENU FIX */
   @media (max-width: 768px) {
-    nav { padding: 15px 20px; }
-    .nav-logo { font-size: 0.9rem; }
-
-    .nav-links {
-      gap: 16px;
-      justify-content: flex-end; /* Aligns the link to the far right on mobile */
-    }
-
-    /* Hide standard links on mobile */
-    .nav-links li:not(.mobile-only) {
-      display: none;
-    }
-
-    /* Ensure Erotic Games link is visible and properly formatted */
-    .nav-links li.mobile-only {
-      display: block;
-    }
-
-    /* Make the tab stand out subtly on mobile */
-    .nav-links li.mobile-only a {
-      color: var(--primary);
-      font-weight: 500;
-    }
-
+    nav { padding: 14px 20px; }
+    .nav-logo { font-size: 1rem; }
     .portfolio-grid { grid-template-columns: 1fr; }
     .portfolio-item:nth-child(1),
     .portfolio-item:nth-child(5) { grid-column: span 1; }
     .about-stats { grid-template-columns: 1fr 1fr; }
     .media-peek { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 12px 16px;
+    }
+    .nav-links {
+      justify-content: center;
+      gap: 8px 14px;
+    }
   }
 </style>
 </head>
@@ -894,8 +907,8 @@
       <!-- Cloudflare Turnstile Widget -->
       <div class="cf-turnstile" data-sitekey="0x4AAAAAABeig5GO7KB3iS08"></div>
 
-<!-- Formspree Honeypot -->
-<input type="text" name="_gotcha" style="display:none" />
+      <!-- Formspree Honeypot -->
+      <input type="text" name="_gotcha" style="display:none" />
       <button type="submit" class="form-submit">Send request →</button>
     </form>
   </div>
@@ -950,7 +963,7 @@ const slides = [
   { type: 'image', src: BASE + 'piggyride.webp'                           },
   { type: 'image', src: BASE + 'lara jungle flies hairy stench cen.webp'  },
   { type: 'image', src: BASE + 'Edit_00001_(5).webp'                      },
-  { type: 'image', src: BASE + 'diablo2-amazon-sexy-ai.webp'           },
+  { type: 'image', src: BASE + 'diablo2-amazon-sexy-ai.webp'              },
   { type: 'image', src: BASE + '2025-10-24_14-18-19_7096.webp'            },
   { type: 'image', src: BASE + '8dba7bbf-d7d3-4d7d-a9d0-3a9d90194239.webp'},
 ];
@@ -1125,6 +1138,8 @@ document.getElementById('mediaMain').addEventListener('click', (e) => {
   const vid = mediaInner.querySelector('video');
   if (vid) {
     btnPlayPause.click();
+  } else {
+    goTo(current + 1);
   }
 });
 
